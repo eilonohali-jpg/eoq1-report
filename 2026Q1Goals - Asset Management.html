@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>2026 Q1 Goal epics — Library &amp; AssetInfra &amp; AI Indexing</title>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --surface: #1a2332;
+      --border: #2d3a4d;
+      --text: #e7ecf3;
+      --muted: #8b9cb3;
+      --link: #6eb5ff;
+      --success: #3dcc85;
+      --warn: #e8b84a;
+      --progress: #6b8cce;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 2rem 1.25rem 3rem;
+    }
+    .wrap { max-width: 960px; margin: 0 auto; }
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 0 0 0.35rem;
+      letter-spacing: -0.02em;
+    }
+    .sub {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 1.75rem;
+    }
+    .callout {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.15rem;
+      margin-bottom: 1.75rem;
+      font-size: 0.9rem;
+    }
+    .callout strong { color: var(--text); }
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+    }
+    .kpi {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem;
+      text-align: center;
+    }
+    .kpi .name { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+    .kpi .pct { font-size: 1.65rem; font-weight: 700; margin: 0.25rem 0; color: var(--success); }
+    .kpi .pct.warn { color: var(--warn); }
+    .kpi .pct.tbd { color: var(--muted); font-size: 1.35rem; }
+    .kpi .meta { font-size: 0.8rem; color: var(--muted); }
+    .kpi .alt {
+      margin-top: 0.55rem;
+      padding-top: 0.55rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.7rem;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+    .kpi .alt-pct {
+      display: block;
+      margin-top: 0.2rem;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #5ee0a0;
+    }
+    .kpi .alt2 {
+      margin-top: 0.5rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.7rem;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+    .kpi .alt2-pct {
+      display: block;
+      margin-top: 0.2rem;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #c4a5ff;
+    }
+    .kpi .alt-pct.warn,
+    .kpi .alt2-pct.warn {
+      color: var(--warn);
+    }
+    h2 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin: 2rem 0 0.75rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid var(--border);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      background: var(--surface);
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      margin-bottom: 0.5rem;
+    }
+    th, td {
+      text-align: left;
+      padding: 0.65rem 0.85rem;
+      border-bottom: 1px solid var(--border);
+    }
+    th {
+      background: rgba(0,0,0,0.2);
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    tr:last-child td { border-bottom: none; }
+    a {
+      color: var(--link);
+      text-decoration: none;
+    }
+    a:hover { text-decoration: underline; }
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .badge.done, .badge.feature, .badge.rollout { background: rgba(61, 204, 133, 0.2); color: var(--success); }
+    .badge.testing, .badge.deployed { background: rgba(232, 184, 74, 0.2); color: var(--warn); }
+    .badge.dev { background: rgba(107, 140, 206, 0.25); color: #a8c4f0; }
+    .badge.blocked { background: rgba(232, 120, 90, 0.22); color: #f0a080; }
+    .badge.open { background: rgba(139, 156, 179, 0.18); color: #a8b8c9; }
+    .epic-note {
+      display: block;
+      margin-top: 0.35rem;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: #9ec8ff;
+    }
+    .epic-note--blocked {
+      color: #ff8a8a;
+    }
+    .target-q2 {
+      display: block;
+      margin-top: 0.35rem;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--warn);
+    }
+    .empty-row td {
+      color: var(--muted);
+      font-style: italic;
+      font-size: 0.82rem;
+    }
+    footer {
+      margin-top: 2.5rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .plan-link {
+      margin: -0.85rem 0 1.75rem;
+      font-size: 0.9rem;
+    }
+    .plan-link a { font-weight: 500; }
+    .plan-link .plan-link-row2 {
+      display: block;
+      margin-top: 0.4rem;
+    }
+    .sync-note {
+      background: rgba(110, 181, 255, 0.08);
+      border: 1px solid rgba(110, 181, 255, 0.25);
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.88rem;
+      color: var(--text);
+    }
+    .sync-note strong { color: #b8d9ff; }
+    table.goal-index {
+      margin-bottom: 2rem;
+    }
+    table.goal-index td:nth-child(2) {
+      min-width: 12rem;
+      max-width: 40rem;
+      line-height: 1.4;
+    }
+    table.goal-index .target-q2 {
+      display: inline;
+      margin-left: 0.35rem;
+      margin-top: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>2026 Q1 Goal epics by squad</h1>
+    <p class="sub">DEV project · Label <code style="background:var(--surface);padding:0.15rem 0.4rem;border-radius:4px;">2026Q1Goal</code> · Squads: Library Search, Library App, AssetInfra, AI Indexing - Asset Management</p>
+    <p class="sub plan-link">
+      <a href="https://wsc-sports.atlassian.net/jira/plans/5622/scenarios/5616/timeline?vid=7612" rel="noopener noreferrer" title="Advanced Roadmap plan 5622, scenario 5616">Jira Advanced Roadmap — plan 5622 timeline (dashboard)</a>
+    </p>
+
+    <div class="sync-note">
+      <strong>Generated 2026-04-16</strong> from Jira via <code style="font-size:0.82rem;">node initiatives/build_goal_epics_library_asset_indexing.mjs</code>. Regenerate after Jira changes. <strong>Issue list:</strong> <a href="https://wsc-sports.atlassian.net/issues/?jql=issuetype%20%3D%20Epic%20AND%20Squad%20in%20(%22Library%20Search%22%2C%20%22Library%20App%22%2C%20AssetInfra%2C%20%22AI%20Indexing%20-%20Asset%20Management%22)%20AND%20labels%20in%20(2026Q1Goal%2C%202026q1goal)">Open in Jira</a>.
+    </div>
+
+    <div class="callout">
+      <strong>Success % (Jira status):</strong> an epic counts as successful if status is
+      <strong>Done</strong>, <strong>Deployed</strong>, <strong>Testing</strong>, <strong>Feature Validation</strong>, or <strong>Feature Rollout</strong>.
+      Other statuses (e.g. Dev in progress, <strong>Open</strong>, <strong>Blocked</strong>) are not counted as success.
+      <br /><br />
+      <strong>Adjusted success %:</strong> same as above, plus epics tagged with <em>Target completion: end of Sprint 1 of Q2</em> (labels or summary).
+      <br /><br />
+      <strong>Incl. Q2 target &amp; blocked (planning view):</strong> previous set plus epics currently <strong>Blocked</strong> (counted once).
+    </div>
+
+    <div class="kpis">
+<div class="kpi">
+        <div class="name">Overall</div>
+        <div class="pct warn">54%</div>
+        <div class="meta">13 / 24 epics</div>
+        <div class="alt">Incl. Q2&nbsp;Sprint&nbsp;1 target<span class="alt-pct warn">54%</span>13 / 24</div>
+        <div class="alt2">Incl. Q2 target &amp; blocked<span class="alt2-pct warn">58%</span>14 / 24</div>
+      </div><div class="kpi">
+        <div class="name">Library Search</div>
+        <div class="pct warn">17%</div>
+        <div class="meta">1 / 6</div>
+        <div class="alt">Incl. Q2&nbsp;Sprint&nbsp;1 target<span class="alt-pct warn">17%</span>1 / 6</div>
+        <div class="alt2">Incl. Q2 target &amp; blocked<span class="alt2-pct warn">17%</span>1 / 6</div>
+      </div><div class="kpi">
+        <div class="name">Library App</div>
+        <div class="pct">100%</div>
+        <div class="meta">5 / 5</div>
+        <div class="alt">Incl. Q2&nbsp;Sprint&nbsp;1 target<span class="alt-pct">100%</span>5 / 5</div>
+        <div class="alt2">Incl. Q2 target &amp; blocked<span class="alt2-pct">100%</span>5 / 5</div>
+      </div><div class="kpi">
+        <div class="name">AssetInfra</div>
+        <div class="pct warn">60%</div>
+        <div class="meta">6 / 10</div>
+        <div class="alt">Incl. Q2&nbsp;Sprint&nbsp;1 target<span class="alt-pct warn">60%</span>6 / 10</div>
+        <div class="alt2">Incl. Q2 target &amp; blocked<span class="alt2-pct warn">70%</span>7 / 10</div>
+      </div><div class="kpi">
+        <div class="name">AI Indexing - Asset Management</div>
+        <div class="pct warn">33%</div>
+        <div class="meta">1 / 3</div>
+        <div class="alt">Incl. Q2&nbsp;Sprint&nbsp;1 target<span class="alt-pct warn">33%</span>1 / 3</div>
+        <div class="alt2">Incl. Q2 target &amp; blocked<span class="alt2-pct warn">33%</span>1 / 3</div>
+      </div>
+    </div>
+
+    <h2>All goals — summary index</h2>
+    <p class="sub" style="margin-top:-0.35rem">Every goal epic once: Key, Summary, Squad, workflow status. Q2 target tags match squad tables.</p>
+    <table class="goal-index">
+      <thead><tr><th>Key</th><th>Summary</th><th>Squad</th><th>Status</th></tr></thead>
+      <tbody>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-185004">DEV-185004</a></td><td>Self Service Program Types - Programs with metadata from streams &amp; video files</td><td>AssetInfra</td><td><span class="badge rollout">FEATURE ROLLOUT</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-219143">DEV-219143</a></td><td>Storage Quota Management - My Quota</td><td>AssetInfra</td><td><span class="badge blocked">Blocked</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-244447">DEV-244447</a></td><td>Brand Detection - Sponsor Exposure Reports</td><td>Library App</td><td><span class="badge done">Done</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-244490">DEV-244490</a></td><td>Internal share &amp; permissions</td><td>Library App</td><td><span class="badge done">Done</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-248903">DEV-248903</a></td><td>Import &amp; Upload Scalability</td><td>AssetInfra</td><td><span class="badge dev">Dev in progress</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-255628">DEV-255628</a></td><td>Brand Detection - GA launch for Proof of Air Reports (On Screen Graphics)</td><td>AI Indexing - Asset Management</td><td><span class="badge done">Done</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-255650">DEV-255650</a></td><td>Permissions - Share with WSC partners (external)</td><td>Library App</td><td><span class="badge testing">Testing</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-255651">DEV-255651</a></td><td>Partner centralised link (rather then folder link) in  partners portal</td><td>Library App</td><td><span class="badge testing">Testing</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-255654">DEV-255654</a></td><td>Standardized and Automated Metadata Display for All Asset Types</td><td>Library Search</td><td><span class="badge dev">Dev in progress</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-259528">DEV-259528</a></td><td>Refeed - Import Service Pipeline &amp; Webhook-Based Stream Delivery</td><td>AssetInfra</td><td><span class="badge dev">Dev in progress</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-183796">DEV-183796</a></td><td>Parent-Child Assets Hierarchy In The Library</td><td>Library Search</td><td><span class="badge dev">Dev in progress</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-218028">DEV-218028</a></td><td>Broadcast Pro - SSO</td><td>AssetInfra</td><td><span class="badge done">Done</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-230132">DEV-230132</a></td><td>Import Manager - backoffice tool to manage import</td><td>AssetInfra</td><td><span class="badge done">Done</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-230135">DEV-230135</a></td><td>Asset Management – media file storage model, BYOS</td><td>AssetInfra</td><td><span class="badge dev">Dev in progress</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-246752">DEV-246752</a></td><td>Import &amp; Embed Image metadata EXIF/IPTC/XMP according to the metadata work group (MWG)</td><td>AssetInfra</td><td><span class="badge deployed">Deployed</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-255191">DEV-255191</a></td><td>Image Metadata - template workflow</td><td>AssetInfra</td><td><span class="badge deployed">Deployed</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-255631">DEV-255631</a></td><td>Asset Intelligence - Link Images to PbP</td><td>AI Indexing - Asset Management</td><td><span class="badge dev">Dev in progress</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-255655">DEV-255655</a></td><td>Metadata Editing - Bulk &amp; Inheritance</td><td>Library Search</td><td><span class="badge open">Open</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-255657">DEV-255657</a></td><td>Semantic Search Infrastructure &amp; Vector Pipeline</td><td>Library Search</td><td><span class="badge done">Done</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-256007">DEV-256007</a></td><td>Multi-Comp UI : Competition indication</td><td>Library App</td><td><span class="badge done">Done</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-256460">DEV-256460</a></td><td>Projects in the library - Q1-26 Implementation</td><td>Library Search</td><td><span class="badge dev">Dev in progress</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-266437">DEV-266437</a></td><td>Import Service Reliability &amp; Refactoring</td><td>AssetInfra</td><td><span class="badge testing">Testing</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-266807">DEV-266807</a></td><td>Asset Intelligence – Image Contextual Enrichment</td><td>AI Indexing - Asset Management</td><td><span class="badge dev">Dev in progress</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-256008">DEV-256008</a></td><td>Improve Search SLA</td><td>Library Search</td><td><span class="badge open">Open</span></td></tr>
+      </tbody>
+    </table>
+
+<h2>Library Search <span style="font-weight:400;color:var(--muted);font-size:0.85rem;">(6 epics)</span></h2>
+<table>
+<thead><tr><th>Key</th><th>Summary</th><th>Status</th></tr></thead><tbody>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-255654">DEV-255654</a></td><td>Standardized and Automated Metadata Display for All Asset Types</td><td><span class="badge dev">Dev in progress</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-183796">DEV-183796</a></td><td>Parent-Child Assets Hierarchy In The Library</td><td><span class="badge dev">Dev in progress</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-255655">DEV-255655</a></td><td>Metadata Editing - Bulk &amp; Inheritance</td><td><span class="badge open">Open</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-255657">DEV-255657</a></td><td>Semantic Search Infrastructure &amp; Vector Pipeline</td><td><span class="badge done">Done</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-256460">DEV-256460</a></td><td>Projects in the library - Q1-26 Implementation</td><td><span class="badge dev">Dev in progress</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-256008">DEV-256008</a></td><td>Improve Search SLA</td><td><span class="badge open">Open</span></td></tr>
+</tbody></table>
+<h2>Library App <span style="font-weight:400;color:var(--muted);font-size:0.85rem;">(5 epics)</span></h2>
+<table>
+<thead><tr><th>Key</th><th>Summary</th><th>Status</th></tr></thead><tbody>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-244447">DEV-244447</a></td><td>Brand Detection - Sponsor Exposure Reports</td><td><span class="badge done">Done</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-244490">DEV-244490</a></td><td>Internal share &amp; permissions</td><td><span class="badge done">Done</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-255650">DEV-255650</a></td><td>Permissions - Share with WSC partners (external)</td><td><span class="badge testing">Testing</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-255651">DEV-255651</a></td><td>Partner centralised link (rather then folder link) in  partners portal</td><td><span class="badge testing">Testing</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-256007">DEV-256007</a></td><td>Multi-Comp UI : Competition indication</td><td><span class="badge done">Done</span></td></tr>
+</tbody></table>
+<h2>AssetInfra <span style="font-weight:400;color:var(--muted);font-size:0.85rem;">(10 epics)</span></h2>
+<table>
+<thead><tr><th>Key</th><th>Summary</th><th>Status</th></tr></thead><tbody>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-185004">DEV-185004</a></td><td>Self Service Program Types - Programs with metadata from streams &amp; video files</td><td><span class="badge rollout">FEATURE ROLLOUT</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-219143">DEV-219143</a></td><td>Storage Quota Management - My Quota</td><td><span class="badge blocked">Blocked</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-248903">DEV-248903</a></td><td>Import &amp; Upload Scalability</td><td><span class="badge dev">Dev in progress</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-259528">DEV-259528</a></td><td>Refeed - Import Service Pipeline &amp; Webhook-Based Stream Delivery</td><td><span class="badge dev">Dev in progress</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-218028">DEV-218028</a></td><td>Broadcast Pro - SSO</td><td><span class="badge done">Done</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-230132">DEV-230132</a></td><td>Import Manager - backoffice tool to manage import</td><td><span class="badge done">Done</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-230135">DEV-230135</a></td><td>Asset Management – media file storage model, BYOS</td><td><span class="badge dev">Dev in progress</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-246752">DEV-246752</a></td><td>Import &amp; Embed Image metadata EXIF/IPTC/XMP according to the metadata work group (MWG)</td><td><span class="badge deployed">Deployed</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-255191">DEV-255191</a></td><td>Image Metadata - template workflow</td><td><span class="badge deployed">Deployed</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-266437">DEV-266437</a></td><td>Import Service Reliability &amp; Refactoring</td><td><span class="badge testing">Testing</span></td></tr>
+</tbody></table>
+<h2>AI Indexing - Asset Management <span style="font-weight:400;color:var(--muted);font-size:0.85rem;">(3 epics)</span></h2>
+<table>
+<thead><tr><th>Key</th><th>Summary</th><th>Status</th></tr></thead><tbody>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-255628">DEV-255628</a></td><td>Brand Detection - GA launch for Proof of Air Reports (On Screen Graphics)</td><td><span class="badge done">Done</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-255631">DEV-255631</a></td><td>Asset Intelligence - Link Images to PbP</td><td><span class="badge dev">Dev in progress</span></td></tr>
+<tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-266807">DEV-266807</a></td><td>Asset Intelligence – Image Contextual Enrichment</td><td><span class="badge dev">Dev in progress</span></td></tr>
+</tbody></table>
+
+    <footer>
+      <strong>Baseline</strong> (13 / 24 = 54%): Jira success = Done, Deployed, Testing, Feature Validation, Feature Rollout.
+      <strong>Incl. Q2 Sprint 1 target</strong> (13 / 24 = 54%).
+      <strong>Incl. Q2 target &amp; blocked</strong> (14 / 24 = 58%).
+      Label <code style="background:var(--surface);padding:0.1rem 0.35rem;border-radius:4px;">2026Q1Goal</code>.
+      JQL: <code style="font-size:0.75rem;word-break:break-all;">issuetype = Epic AND Squad in (&quot;Library Search&quot;, &quot;Library App&quot;, AssetInfra, &quot;AI Indexing - Asset Management&quot;) AND labels in (2026Q1Goal, 2026q1goal)</code>
+      <br />Output: <code style="font-size:0.75rem;word-break:break-all;">C:\Users\EilonOhali\Desktop\Eilon copilot\initiatives\2026-q1-goal-epics-library-asset-indexing.html</code>
+    </footer>
+  </div>
+</body>
+</html>

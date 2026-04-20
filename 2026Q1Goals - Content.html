@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>2026 Q1 Goal epics — Content unit</title>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --surface: #1a2332;
+      --border: #2d3a4d;
+      --text: #e7ecf3;
+      --muted: #8b9cb3;
+      --link: #6eb5ff;
+      --success: #3dcc85;
+      --warn: #e8b84a;
+      --progress: #6b8cce;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 2rem 1.25rem 3rem;
+    }
+    .wrap { max-width: 960px; margin: 0 auto; }
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 0 0 0.35rem;
+      letter-spacing: -0.02em;
+    }
+    .sub {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 1.75rem;
+    }
+    .callout {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.15rem;
+      margin-bottom: 1.75rem;
+      font-size: 0.9rem;
+    }
+    .callout strong { color: var(--text); }
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+    }
+    .kpi {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem;
+      text-align: center;
+    }
+    .kpi .name { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+    .kpi .pct { font-size: 1.65rem; font-weight: 700; margin: 0.25rem 0; color: var(--success); }
+    .kpi .pct.warn { color: var(--warn); }
+    .kpi .pct.tbd { color: var(--muted); font-size: 1.35rem; }
+    .kpi .meta { font-size: 0.8rem; color: var(--muted); }
+    .kpi .alt {
+      margin-top: 0.55rem;
+      padding-top: 0.55rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.7rem;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+    .kpi .alt-pct {
+      display: block;
+      margin-top: 0.2rem;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #5ee0a0;
+    }
+    .kpi .alt2 {
+      margin-top: 0.5rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.7rem;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+    .kpi .alt2-pct {
+      display: block;
+      margin-top: 0.2rem;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #c4a5ff;
+    }
+    .kpi .alt-pct.warn,
+    .kpi .alt2-pct.warn {
+      color: var(--warn);
+    }
+    h2 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin: 2rem 0 0.75rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid var(--border);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      background: var(--surface);
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      margin-bottom: 0.5rem;
+    }
+    th, td {
+      text-align: left;
+      padding: 0.65rem 0.85rem;
+      border-bottom: 1px solid var(--border);
+    }
+    th {
+      background: rgba(0,0,0,0.2);
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    tr:last-child td { border-bottom: none; }
+    a {
+      color: var(--link);
+      text-decoration: none;
+    }
+    a:hover { text-decoration: underline; }
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .badge.done, .badge.feature, .badge.rollout { background: rgba(61, 204, 133, 0.2); color: var(--success); }
+    .badge.testing, .badge.deployed { background: rgba(232, 184, 74, 0.2); color: var(--warn); }
+    .badge.dev { background: rgba(107, 140, 206, 0.25); color: #a8c4f0; }
+    .badge.blocked { background: rgba(232, 120, 90, 0.22); color: #f0a080; }
+    .badge.open { background: rgba(139, 156, 179, 0.18); color: #a8b8c9; }
+    .epic-note {
+      display: block;
+      margin-top: 0.35rem;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: #9ec8ff;
+    }
+    .epic-note--blocked {
+      color: #ff8a8a;
+    }
+    .target-q2 {
+      display: block;
+      margin-top: 0.35rem;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--warn);
+    }
+    .empty-row td {
+      color: var(--muted);
+      font-style: italic;
+      font-size: 0.82rem;
+    }
+    footer {
+      margin-top: 2.5rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .plan-link {
+      margin: -0.85rem 0 1.75rem;
+      font-size: 0.9rem;
+    }
+    .plan-link a { font-weight: 500; }
+    .plan-link .plan-link-row2 {
+      display: block;
+      margin-top: 0.4rem;
+    }
+    .sync-note {
+      background: rgba(110, 181, 255, 0.08);
+      border: 1px solid rgba(110, 181, 255, 0.25);
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.88rem;
+      color: var(--text);
+    }
+    .sync-note strong { color: #b8d9ff; }
+    table.goal-index {
+      margin-bottom: 2rem;
+    }
+    table.goal-index td:nth-child(2) {
+      min-width: 12rem;
+      max-width: 40rem;
+      line-height: 1.4;
+    }
+    table.goal-index .target-q2 {
+      display: inline;
+      margin-left: 0.35rem;
+      margin-top: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>2026 Q1 Goal epics by squad</h1>
+    <p class="sub">Unit <code style="background:var(--surface);padding:0.15rem 0.4rem;border-radius:4px;">Content</code> · DEV project · Label <code style="background:var(--surface);padding:0.15rem 0.4rem;border-radius:4px;">2026Q1Goal</code> · Squads: Sports-Basketball, Sports-Cricket, Sports-Soccer, Backoffice, AVgen, Avgen 2</p>
+    <p class="sub plan-link">
+      <a href="https://wsc-sports.atlassian.net/jira/plans/5622/scenarios/5616/timeline?vid=7612" rel="noopener noreferrer" title="Advanced Roadmap: plan 5622, scenario 5616">Jira Advanced Roadmap — plan 5622 timeline (relevant squads)</a>
+      <span class="plan-link-row2"><a href="https://wsc-sports.atlassian.net/jira/plans/10388/scenarios/10382/timeline?vid=13664" rel="noopener noreferrer">Jira Advanced Roadmap — Q2 plan (timeline)</a></span>
+    </p>
+
+    <div class="sync-note">
+      <strong>Snapshot:</strong> This file does <strong>not</strong> sync from Jira by itself. After you update epic <strong>Summary</strong> in Jira, refresh this HTML by running <code style="font-size:0.82rem;">node initiatives/patch_avgen_summaries_from_jira.mjs</code> from the repo root. Put <code>.atlassian_email</code> and <code>.atlassian_api_token</code> next to this folder (same as other PM scripts), or set <code>ATLASSIAN_EMAIL</code> + <code>ATLASSIAN_API_TOKEN</code>. Alternative: <code>node initiatives/patch_avgen_summaries_from_jira.mjs --json summaries.json</code> with <code>{"DEV-243878":"Title",...}</code>. The <strong>All goals — summary index</strong> lists every epic once. <strong>Issue list:</strong> <a href="https://wsc-sports.atlassian.net/issues/?jql=issuetype%20%3D%20Epic%20AND%20labels%20in%20(2026Q1Goal%2C%202026q1goal)%20AND%20Squad%20in%20(%22Sports-Basketball%22%2C%20%22Sports-Cricket%22%2C%20%22Sports-Soccer%22%2C%20Backoffice%2C%20AVgen%2C%20%22Avgen%202%22)">JQL filter</a>.
+    </div>
+
+    <div class="callout">
+      <strong>Success % (Jira status):</strong> an epic counts as successful if status is
+      <strong>Done</strong>, <strong>Deployed</strong>, <strong>Testing</strong>, <strong>Feature Validation</strong>, or <strong>Feature Rollout</strong>.
+      Other statuses (e.g. Dev in progress, <strong>Open</strong>, <strong>Blocked</strong>) are not counted as success.
+      <br /><br />
+      <strong>Adjusted success %:</strong> same as above, plus epics tagged below with <em>Target completion: end of Sprint 1 of Q2</em> (adds epics in Dev in progress that carry that target; Q2-tagged epics already in Testing count only in the baseline).
+      <br /><br />
+      <strong>Incl. Q2 target &amp; blocked (planning view):</strong> Jira-status successes, plus epics with <em>Target completion: end of Sprint 1 of Q2</em> that are not yet counted (Dev in progress), <em>and</em> epics currently <strong>Blocked</strong> counted as if complete. Overlaps are counted once.
+    </div>
+
+    <div class="kpis">
+      <div class="kpi">
+        <div class="name">Overall</div>
+        <div class="pct warn">66.7%</div>
+        <div class="meta">14 / 21 epics</div>
+        <div class="alt">Incl. Q2&nbsp;Sprint&nbsp;1 target<span class="alt-pct warn">95.2%</span>20 / 21</div>
+        <div class="alt2">Incl. Q2 target &amp; blocked<span class="alt2-pct warn">95.2%</span>20 / 21</div>
+      </div>
+      <div class="kpi">
+        <div class="name">Sports-Basketball</div>
+        <div class="pct warn">75%</div>
+        <div class="meta">3 / 4</div>
+        <div class="alt">Incl. Q2&nbsp;Sprint&nbsp;1 target<span class="alt-pct">100%</span>4 / 4</div>
+        <div class="alt2">Incl. Q2 target &amp; blocked<span class="alt2-pct">100%</span>4 / 4</div>
+      </div>
+      <div class="kpi">
+        <div class="name">Sports-Cricket</div>
+        <div class="pct warn">60%</div>
+        <div class="meta">3 / 5</div>
+        <div class="alt">Incl. Q2&nbsp;Sprint&nbsp;1 target<span class="alt-pct">100%</span>5 / 5</div>
+        <div class="alt2">Incl. Q2 target &amp; blocked<span class="alt2-pct">100%</span>5 / 5</div>
+      </div>
+      <div class="kpi">
+        <div class="name">Sports-Soccer</div>
+        <div class="pct">100%</div>
+        <div class="meta">1 / 1</div>
+        <div class="alt">Incl. Q2&nbsp;Sprint&nbsp;1 target<span class="alt-pct">100%</span>1 / 1</div>
+        <div class="alt2">Incl. Q2 target &amp; blocked<span class="alt2-pct">100%</span>1 / 1</div>
+      </div>
+      <div class="kpi">
+        <div class="name">Backoffice</div>
+        <div class="pct warn">57.1%</div>
+        <div class="meta">4 / 7</div>
+        <div class="alt">Incl. Q2&nbsp;Sprint&nbsp;1 target<span class="alt-pct warn">85.7%</span>6 / 7</div>
+        <div class="alt2">Incl. Q2 target &amp; blocked<span class="alt2-pct warn">85.7%</span>6 / 7</div>
+      </div>
+      <div class="kpi">
+        <div class="name">AVgen</div>
+        <div class="pct warn">66.7%</div>
+        <div class="meta">2 / 3</div>
+        <div class="alt">Incl. Q2&nbsp;Sprint&nbsp;1 target<span class="alt-pct">100%</span>3 / 3</div>
+        <div class="alt2">Incl. Q2 target &amp; blocked<span class="alt2-pct">100%</span>3 / 3</div>
+      </div>
+      <div class="kpi">
+        <div class="name">Avgen 2</div>
+        <div class="pct">100%</div>
+        <div class="meta">1 / 1</div>
+        <div class="alt">Incl. Q2&nbsp;Sprint&nbsp;1 target<span class="alt-pct">100%</span>1 / 1</div>
+        <div class="alt2">Incl. Q2 target &amp; blocked<span class="alt2-pct">100%</span>1 / 1</div>
+      </div>
+    </div>
+
+    <h2>All goals — summary index</h2>
+    <p class="sub" style="margin-top:-0.35rem">Every goal epic once: Jira <strong>Summary</strong> (title), squad, and workflow status. Q2 target tags match the squad tables below.</p>
+    <table class="goal-index">
+      <thead><tr><th>Key</th><th>Summary</th><th>Squad</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-243878">DEV-243878</a></td><td>Multi Competitions - Q1</td><td>Sports-Basketball</td><td><span class="badge done">Done</span></td></tr>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-243575">DEV-243575</a></td><td>AM/BD Olympics MICO Preparations left overs</td><td>Sports-Basketball</td><td><span class="badge done">Done</span></td></tr>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-255988">DEV-255988</a></td><td>Metadata Model - Develop entities in the new infra</td><td>Sports-Basketball</td><td><span class="badge done">Done</span></td></tr>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-258366">DEV-258366</a></td><td>Advanced Action Customization for Video Creation - Content setting<span class="target-q2">Target completion: end of Sprint 1 of Q2</span></td><td>Sports-Basketball</td><td><span class="badge dev">Dev in progress</span></td></tr>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-229980">DEV-229980</a></td><td>OBS Marker ingestion - Video Logs feed</td><td>Sports-Cricket</td><td><span class="badge done">Done</span></td></tr>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-216469">DEV-216469</a></td><td>Generate names within Create and Rules flows<span class="target-q2">Target completion: end of Sprint 1 of Q2</span></td><td>Sports-Cricket</td><td><span class="badge dev">Dev in progress</span></td></tr>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-255982">DEV-255982</a></td><td>Tech review &amp; resarch - Enable Sports to work with multiple sub-sports types - OneClick</td><td>Sports-Cricket</td><td><span class="badge done">Done</span></td></tr>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-255990">DEV-255990</a></td><td>Multi-Comp: Support Studio Shows</td><td>Sports-Cricket</td><td><span class="badge deployed">Deployed</span></td></tr>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-255991">DEV-255991</a></td><td>WSC ID - Migration of additional entities infrastructure (Rosters, Competitions)<span class="target-q2">Target completion: end of Sprint 1 of Q2</span></td><td>Sports-Cricket</td><td><span class="badge dev">Dev in progress</span></td></tr>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-255987">DEV-255987</a></td><td>Content Quality - Under 1% Policy - 7 Sports</td><td>Sports-Soccer</td><td><span class="badge testing">Testing</span></td></tr>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-213433">DEV-213433</a></td><td>Refeed Tracker in Control Room<span class="target-q2">Target completion: end of Sprint 1 of Q2</span></td><td>Backoffice</td><td><span class="badge dev">Dev in progress</span></td></tr>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-244448">DEV-244448</a></td><td>Enable Efficient Manual Event Logging in Mamba</td><td>Backoffice</td><td><span class="badge testing">Testing</span></td></tr>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-230803">DEV-230803</a></td><td>Refeed Request Detail Screen – MVP<span class="target-q2">Target completion: end of Sprint 1 of Q2</span></td><td>Backoffice</td><td><span class="badge dev">Dev in progress</span></td></tr>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-255985">DEV-255985</a></td><td>[BO] Diesel - Skill Based Dispatcher And New Access Controll</td><td>Backoffice</td><td><span class="badge open">Open</span></td></tr>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-243335">DEV-243335</a></td><td>DR Environment Automation for Streams &amp; Programs</td><td>Backoffice</td><td><span class="badge done">Done</span></td></tr>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-269570">DEV-269570</a></td><td>Send Chained Events to the Same Reviewer</td><td>Backoffice</td><td><span class="badge done">Done</span></td></tr>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-272158">DEV-272158</a></td><td>Review Talking Heads EventClip in Diesel</td><td>Backoffice</td><td><span class="badge done">Done</span></td></tr>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-228744">DEV-228744</a></td><td>Studio 2.0 - Integration to AVgen</td><td>AVgen</td><td><span class="badge done">Done</span></td></tr>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-266079">DEV-266079</a></td><td>Studio 2.0 &lt;&gt; AVgen – Captions &amp; Overlays Integration<span class="target-q2">Target completion: end of Sprint 1 of Q2</span></td><td>AVgen</td><td><span class="badge dev">Dev in progress</span></td></tr>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-244545">DEV-244545</a></td><td>Press &amp; Interview Storylines - Enrich Highlights, Standalone</td><td>AVgen</td><td><span class="badge rollout">Feature Rollout</span></td></tr>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-220359">DEV-220359</a></td><td>'Create' for Studio Shows - By Transcription &amp; Full Episode <span class="epic-note">Squad not on paste line; placed under Avgen 2 — confirm in Jira.</span></td><td>Avgen 2</td><td><span class="badge rollout">Feature Rollout</span></td></tr>
+      </tbody>
+    </table>
+
+    <h2>Sports-Basketball <span style="font-weight:400;color:var(--muted);font-size:0.85rem;">(4 epics)</span></h2>
+    <table>
+      <thead><tr><th>Key</th><th>Summary</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-243878">DEV-243878</a></td><td>Multi Competitions - Q1</td><td><span class="badge done">Done</span></td></tr>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-243575">DEV-243575</a></td><td>AM/BD Olympics MICO Preparations left overs</td><td><span class="badge done">Done</span></td></tr>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-255988">DEV-255988</a></td><td>Metadata Model - Develop entities in the new infra</td><td><span class="badge done">Done</span></td></tr>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-258366">DEV-258366</a></td><td>Advanced Action Customization for Video Creation - Content setting<span class="target-q2">Target completion: end of Sprint 1 of Q2</span></td><td><span class="badge dev">Dev in progress</span></td></tr>
+      </tbody>
+    </table>
+
+    <h2>Sports-Cricket <span style="font-weight:400;color:var(--muted);font-size:0.85rem;">(5 epics)</span></h2>
+    <table>
+      <thead><tr><th>Key</th><th>Summary</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-229980">DEV-229980</a></td><td>OBS Marker ingestion - Video Logs feed</td><td><span class="badge done">Done</span></td></tr>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-216469">DEV-216469</a></td><td>Generate names within Create and Rules flows<span class="target-q2">Target completion: end of Sprint 1 of Q2</span></td><td><span class="badge dev">Dev in progress</span></td></tr>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-255982">DEV-255982</a></td><td>Tech review &amp; resarch - Enable Sports to work with multiple sub-sports types - OneClick</td><td><span class="badge done">Done</span></td></tr>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-255990">DEV-255990</a></td><td>Multi-Comp: Support Studio Shows</td><td><span class="badge deployed">Deployed</span></td></tr>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-255991">DEV-255991</a></td><td>WSC ID - Migration of additional entities infrastructure (Rosters, Competitions)<span class="target-q2">Target completion: end of Sprint 1 of Q2</span></td><td><span class="badge dev">Dev in progress</span></td></tr>
+      </tbody>
+    </table>
+
+    <h2>Sports-Soccer <span style="font-weight:400;color:var(--muted);font-size:0.85rem;">(1 epic)</span></h2>
+    <table>
+      <thead><tr><th>Key</th><th>Summary</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-255987">DEV-255987</a></td><td>Content Quality - Under 1% Policy - 7 Sports</td><td><span class="badge testing">Testing</span></td></tr>
+      </tbody>
+    </table>
+
+    <h2>Backoffice <span style="font-weight:400;color:var(--muted);font-size:0.85rem;">(7 epics)</span></h2>
+    <table>
+      <thead><tr><th>Key</th><th>Summary</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-213433">DEV-213433</a></td><td>Refeed Tracker in Control Room<span class="target-q2">Target completion: end of Sprint 1 of Q2</span></td><td><span class="badge dev">Dev in progress</span></td></tr>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-244448">DEV-244448</a></td><td>Enable Efficient Manual Event Logging in Mamba</td><td><span class="badge testing">Testing</span></td></tr>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-230803">DEV-230803</a></td><td>Refeed Request Detail Screen – MVP<span class="target-q2">Target completion: end of Sprint 1 of Q2</span></td><td><span class="badge dev">Dev in progress</span></td></tr>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-255985">DEV-255985</a></td><td>[BO] Diesel - Skill Based Dispatcher And New Access Controll</td><td><span class="badge open">Open</span></td></tr>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-243335">DEV-243335</a></td><td>DR Environment Automation for Streams &amp; Programs</td><td><span class="badge done">Done</span></td></tr>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-269570">DEV-269570</a></td><td>Send Chained Events to the Same Reviewer</td><td><span class="badge done">Done</span></td></tr>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-272158">DEV-272158</a></td><td>Review Talking Heads EventClip in Diesel</td><td><span class="badge done">Done</span></td></tr>
+      </tbody>
+    </table>
+
+    <h2>AVgen <span style="font-weight:400;color:var(--muted);font-size:0.85rem;">(3 epics)</span></h2>
+    <table>
+      <thead><tr><th>Key</th><th>Summary</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-228744">DEV-228744</a></td><td>Studio 2.0 - Integration to AVgen</td><td><span class="badge done">Done</span></td></tr>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-266079">DEV-266079</a></td><td>Studio 2.0 &lt;&gt; AVgen – Captions &amp; Overlays Integration<span class="target-q2">Target completion: end of Sprint 1 of Q2</span></td><td><span class="badge dev">Dev in progress</span></td></tr>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-244545">DEV-244545</a></td><td>Press &amp; Interview Storylines - Enrich Highlights, Standalone</td><td><span class="badge rollout">Feature Rollout</span></td></tr>
+      </tbody>
+    </table>
+
+    <h2>Avgen 2 <span style="font-weight:400;color:var(--muted);font-size:0.85rem;">(1 epic)</span></h2>
+    <table>
+      <thead><tr><th>Key</th><th>Summary</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><a href="https://wsc-sports.atlassian.net/browse/DEV-220359">DEV-220359</a></td><td>'Create' for Studio Shows - By Transcription &amp; Full Episode <span class="epic-note">Squad not on paste line; placed under Avgen 2 — confirm in Jira.</span></td><td><span class="badge rollout">Feature Rollout</span></td></tr>
+      </tbody>
+    </table>
+
+    <footer>
+      <strong>Baseline</strong> (14 / 21 = 66.7%): Jira success = Done, Deployed, Testing, Feature Validation, Feature Rollout. <strong>Incl. Q2 Sprint 1 target</strong> (20 / 21 = 95.2%): baseline + every epic in <strong>Dev in progress</strong> that is tagged below with <em>Target completion: end of Sprint 1 of Q2</em> (6 epics). <strong>Incl. Q2 target &amp; blocked</strong> (20 / 21): same numerator as Q2 Sprint 1 target plus any <strong>Blocked</strong> epics counted as complete — none in this snapshot, so matches Q2 Sprint 1 target. Remove the Q2 line from a row in Jira if that epic does not carry the Sprint 1 Q2 target. Unit <code style="background:var(--surface);padding:0.1rem 0.35rem;border-radius:4px;">Content</code>, label <code style="background:var(--surface);padding:0.1rem 0.35rem;border-radius:4px;">2026Q1Goal</code>. JQL: <code style="font-size:0.75rem;word-break:break-all;">issuetype = Epic AND labels in (2026Q1Goal, 2026q1goal) AND Squad in ("Sports-Basketball", "Sports-Cricket", "Sports-Soccer", Backoffice, AVgen, "Avgen 2")</code>
+    </footer>
+  </div>
+</body>
+</html>
